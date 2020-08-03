@@ -319,7 +319,7 @@ static void mdss_fb_set_bl_brightness(struct led_classdev *led_cdev,
 	if (value > mfd->panel_info->brightness_max)
 		value = mfd->panel_info->brightness_max;
 
-	// Boeffla: apply min limits for LCD backlight (0 is exception for display off)
+		// Boeffla: apply min limits for LCD backlight (0 is exception for display off)
 	if (value != 0 && value < backlight_min)
 		value = backlight_min;
 
@@ -4102,7 +4102,7 @@ static int mdss_fb_set_par(struct fb_info *info)
 {
 	struct msm_fb_data_type *mfd = (struct msm_fb_data_type *)info->par;
 	struct fb_var_screeninfo *var = &info->var;
-	int old_imgType, old_format;
+	int old_imgType, old_format, out_format;
 	int ret = 0;
 
 	ret = mdss_fb_pan_idle(mfd);
@@ -4185,8 +4185,10 @@ static int mdss_fb_set_par(struct fb_info *info)
 		mfd->fbi->fix.smem_len = PAGE_ALIGN(mfd->fbi->fix.line_length *
 				mfd->fbi->var.yres) * mfd->fb_page;
 
-	old_format = mdss_grayscale_to_mdp_format(var->grayscale);
-	if (!IS_ERR_VALUE(old_format)) {
+	old_format = mfd->panel_info->out_format;
+	out_format = mdss_grayscale_to_mdp_format(var->grayscale);
+	if (!IS_ERR_VALUE(out_format)) {
+		mfd->panel_info->out_format = out_format;
 		if (old_format != mfd->panel_info->out_format)
 			mfd->panel_reconfig = true;
 	}
