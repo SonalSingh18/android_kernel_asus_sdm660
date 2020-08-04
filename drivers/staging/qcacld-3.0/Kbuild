@@ -2018,3 +2018,8 @@ endif
 obj-$(CONFIG_QCA_CLD_WLAN) += $(MODNAME).o
 $(MODNAME)-y := $(OBJS)
 clean-files := $(CLEAN_FILES)
+
+# Silence Clang warning
+ifeq ($(cc-name),clang)
+EXTRA_CFLAGS += -Wno-enum-conversion
+endif
